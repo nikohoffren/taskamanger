@@ -98,7 +98,7 @@ python manage.py createsuperuser
 Esimerkkitunnukset:
 
 - **Käyttäjänimi:** testuser
-- **Salasana:** test123
+- **Salasana:** test1234 (vähintään 8 merkkiä pitkä salasana)
 
 JWT-tokenin hankkiminen:
 
@@ -106,7 +106,7 @@ JWT-tokenin hankkiminen:
 POST http://localhost:8000/api/token/
 {
   "username": "testuser",
-  "password": "test123"
+  "password": "test1234"
 }
 ```
 
@@ -115,7 +115,7 @@ POST http://localhost:8000/api/token/
 ### JWT-token
 
 - **POST** `/api/token/` - Hae access ja refresh token
-- **POST** `/api/token/refresh/` - Päivitä access token
+- **POST** `/api/token/refresh/` - Päivitä access token jos se on vanhentunut
 
 ### Tehtävät
 
@@ -137,7 +137,7 @@ Esimerkki Body-parametrit:
 }
 ```
 
-Kaikki API-kutsut vaativat Authorization-headerin: `Bearer <your_access_token>`
+Kaikki API-kutsut vaativat Authorization-headerin: `Bearer <access_token>`
 
 ## Admin-paneeli
 
