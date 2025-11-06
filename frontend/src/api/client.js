@@ -1,20 +1,12 @@
 const BASE_URL = "http://localhost:8000/api";
 
-async function refreshToken() {
-  const refresh = localStorage.getItem("refresh");
-  if (!refresh) return null;
-
-  const response = await fetch(`${BASE_URL}/token/refresh/`, {
+export async function verifyToken(token) {
+  const response = await fetch("http://localhost:8000/api/token/verify/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refresh }),
+    body: JSON.stringify({ token }),
   });
-
-  if (!response.ok) return null;
-
-  const data = await response.json();
-  localStorage.setItem("access", data.access);
-  return data.access;
+  return response.ok;
 }
 
 export async function apiRequest(
@@ -22,8 +14,7 @@ export async function apiRequest(
   method = "GET",
   body = null,
   token = null,
-  onUnauthorized = null,
-  retry = true
+  onUnauthorized = null
 ) {
   const headers = { "Content-Type": "application/json" };
   if (token) headers.Authorization = `Bearer ${token}`;
@@ -33,21 +24,12 @@ export async function apiRequest(
 
   const response = await fetch(`${BASE_URL}/${endpoint}`, options);
 
-  if (response.status === 401 && retry) {
-    const newToken = await refreshToken();
-    if (newToken) {
-      return apiRequest(
-        endpoint,
-        method,
-        body,
-        newToken,
-        onUnauthorized,
-        false
-      );
-    } else {
-      if (onUnauthorized) onUnauthorized();
-      throw new Error("Unauthorized - token expired");
+  if (response.status === 401) {
+    if (onUnauthorized) {
+      onUnauthorized();
     }
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || "Unauthorized");
   }
 
   if (!response.ok) {

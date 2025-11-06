@@ -15,34 +15,35 @@ export default function LoginForm({ onLogin }) {
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
       onLogin(data.access);
-    } catch (err) {
+    } catch {
       setError("Invalid username or password");
     }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.5rem",
-        width: "250px",
-      }}
-    >
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Login</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </form>
+    <div className="login-container">
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2 className="login-title">Login</h2>
+        <input
+          className="login-input"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          className="login-input"
+          placeholder="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit" className="login-button">
+          Login
+        </button>
+        {error && <p className="login-error">{error}</p>}
+      </form>
+    </div>
   );
 }
